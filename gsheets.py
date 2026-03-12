@@ -10,7 +10,7 @@ scope = [
 ]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "service_account.json",
+    "googlesheetapi.json",
     scope
 )
 
