@@ -7,4 +7,4 @@ df = read_data()
 leaderboard = df.groupby("username")["score"].sum().reset_index()
 leaderboard = leaderboard.sort_values("score", ascending=False)
 
-st.dataframe(leaderboard, use_container_width=True)
+st.dataframe(leaderboard, width='stretch')
