@@ -1,21 +1,36 @@
 import streamlit as st
 import pandas as pd
 
-CSV_FILE = "predictions.csv"
+PRED_FILE = "predictions.csv"
 
 st.title("Manager Approval")
 
-try:
-    df = pd.read_csv(CSV_FILE)
-except FileNotFoundError:
-    st.warning("No predictions yet.")
+df = pd.read_csv(PRED_FILE)
+
+pending = df[df["approval_status"] == "pending"]
+
+if pending.empty:
+    st.success("No pending approvals")
     st.stop()
 
-pending = df[df["approved"]==False]
+st.write("Pending Predictions")
 
-for idx, row in pending.iterrows():
-    st.write(f"{row['username']} | {row['match']} | {row['prediction']} | Bold: {row['bold']}")
-    if st.button(f"Approve {row['username']} - {row['match']}", key=idx):
-        df.at[idx, "approved"] = True
-        df.to_csv(CSV_FILE, index=False)
-        st.experimental_rerun()
+pending["approve"] = False
+
+edited = st.data_editor(
+    pending,
+    column_config={"approve": st.column_config.CheckboxColumn()},
+    use_container_width=True
+)
+
+if st.button("Approve Selected"):
+
+    approve_rows = edited[edited["approve"] == True]
+
+    for idx in approve_rows.index:
+        df.loc[idx, "approval_status"] = "approved"
+
+    df.to_csv(PRED_FILE, index=False)
+
+    st.success("Approved Successfully")
+    st.rerun()
