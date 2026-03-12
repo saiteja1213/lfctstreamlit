@@ -1,34 +1,25 @@
 import streamlit as st
 import pandas as pd
-from gsheets import read_data, update_cell, append_row
+from gsheets import read_data, update_cell
+from theme import apply_theme
 
-st.title("Admin Panel")
+apply_theme()
+st.title("⚙️ Admin Panel")
+
 password_input = st.text_input("Enter Admin Password", type="password")
-
-
 if password_input != st.secrets["ADMIN_PASSWORD"]:
     st.warning("Incorrect password! Access denied.")
-    st.stop()  # Stop page if password is wrong
-
-if "admin_auth" not in st.session_state:
-    st.session_state.admin_auth = False
-
-if not st.session_state.admin_auth:
-    pw = st.text_input("Admin Password", type="password")
-    if st.button("Login"):
-        if pw == ADMIN_PASSWORD:
-            st.session_state.admin_auth = True
-            st.rerun()
-        else:
-            st.error("Wrong password")
     st.stop()
 
-df = read_data()
-edited_df = st.data_editor(df, num_rows="dynamic", width='stretch')
+st.success("Access granted.")
 
-if st.button("Save Changes"):
+df = read_data()
+st.markdown(f"**{len(df)} total records in sheet**")
+edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+
+if st.button("💾 Save Changes"):
     for idx, row in edited_df.iterrows():
         for col_idx, col_name in enumerate(df.columns):
             update_cell(idx + 2, col_idx + 1, row[col_name])
-    st.success("Sheet Updated!")
+    st.success("Sheet updated!")
     st.rerun()
