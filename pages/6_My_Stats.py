@@ -111,7 +111,7 @@ def render_table(data):
     if data.empty:
         st.info("Nothing here yet.")
         return
-    disp = data[["timestamp", "match", "prediction", "bold", "approval_status", "result_status", "score"]].copy()
+    disp = data[["timestamp", "Match", "prediction", "bold", "approval_status", "result_status", "score"]].copy()
     disp.columns = ["Time", "Match", "Prediction", "Bold", "Approval", "Result", "Score"]
     st.dataframe(disp, use_container_width=True, hide_index=True)
 
