@@ -19,14 +19,14 @@ if not st.session_state.auth:
     st.stop()
 
 df = read_data()
-pending = df[(df["approval_status"]=="approved") & (df["result_status"]=="pending")]
+pending = df[(df["approval_status"]=="approved") & (df["result_status"]=="pending")].copy()
 
 if pending.empty:
     st.success("No pending results")
     st.stop()
 
-pending["correct"] = False
-edited = st.data_editor(pending, use_container_width=True)
+pending.loc[:,"correct"] = False
+edited = st.data_editor(pending,width='stretch')
 
 if st.button("Submit Results"):
     for idx, row in edited.iterrows():
