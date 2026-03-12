@@ -1,6 +1,28 @@
 import streamlit as st
 import pandas as pd
 
+MANAGER_PASSWORD = "admin"
+
+def check_password():
+    if "manager_auth" not in st.session_state:
+        st.session_state.manager_auth = False
+
+    if not st.session_state.manager_auth:
+
+        password = st.text_input("Manager Password", type="password")
+
+        if st.button("Login"):
+            if password == MANAGER_PASSWORD:
+                st.session_state.manager_auth = True
+                st.success("Access Granted")
+                st.rerun()
+            else:
+                st.error("Wrong password")
+
+        st.stop()
+
+check_password()
+
 PRED_FILE = "predictions.csv"
 
 st.title("Manager Approval")
