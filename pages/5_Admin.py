@@ -19,7 +19,7 @@ if not st.session_state.admin_auth:
     st.stop()
 
 df = read_data()
-edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+edited_df = st.data_editor(df, num_rows="dynamic", width='stretch')
 
 if st.button("Save Changes"):
     for idx, row in edited_df.iterrows():
