@@ -19,7 +19,7 @@ if today_matches.empty:
     st.warning("No matches scheduled for today!")
 else:
     # Dropdown for match selection
-    selected_match = st.selectbox("Select Match", today_matches["match"])
+    selected_match = st.selectbox("Select Match", today_matches["match_name"])
 
     username = st.text_input("Your Name")
     prediction = st.text_input("Your Prediction")
