@@ -27,7 +27,7 @@ if pending.empty:
 
 pending.loc[:,"approve"] = False
 
-edited = st.data_editor(pending, width='strech')
+edited = st.data_editor(pending, width='stretch')
 
 if st.button("Approve Selected"):
     for idx, row in edited.iterrows():
