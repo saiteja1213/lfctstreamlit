@@ -1,14 +1,10 @@
 import streamlit as st
-import pandas as pd
-
-PRED_FILE = "predictions.csv"
+from gsheets import read_data
 
 st.title("Leaderboard")
 
-df = pd.read_csv(PRED_FILE)
-
+df = read_data()
 leaderboard = df.groupby("username")["score"].sum().reset_index()
-
-leaderboard = leaderboard.sort_values(by="score", ascending=False)
+leaderboard = leaderboard.sort_values("score", ascending=False)
 
 st.dataframe(leaderboard, use_container_width=True)
