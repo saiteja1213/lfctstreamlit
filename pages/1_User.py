@@ -2,51 +2,46 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-CSV_FILE = "predictions.csv"
-MATCHES_FILE = "matches.csv"
+PRED_FILE = "predictions.csv"
+MATCH_FILE = "matches.csv"
 
 st.title("Submit Prediction")
 
-# Load matches
-try:
-    matches_df = pd.read_csv(MATCHES_FILE)
-except FileNotFoundError:
-    st.warning("No matches file found.")
-    st.stop()
+matches = pd.read_csv(MATCH_FILE)
 
-# Filter matches for today
-today_str = datetime.now().strftime("%m-%d-%Y")
-today_matches = matches_df[matches_df["match_date"] == today_str]
+today = datetime.now().strftime("%m-%d-%Y")
+today_matches = matches[matches["match_date"] == today]
 
 if today_matches.empty:
-    st.info("No matches today.")
+    st.warning("No matches today")
     st.stop()
 
-# Dropdown for today's matches
-match = st.selectbox("Select Match", today_matches["match_name"].tolist())
+match = st.selectbox("Select Match", today_matches["match_name"])
 
 username = st.text_input("Your Name")
-prediction = st.text_input("Prediction (Win/Lose/Draw)")
-bold = st.checkbox("Bold Prediction (double points)")
+prediction = st.text_input("Prediction")
+bold = st.checkbox("Bold Prediction (2 points)")
 
 if st.button("Submit Prediction"):
-    timestamp = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
+
     new_row = {
-        "timestamp": timestamp,
+        "timestamp": datetime.now().strftime("%m-%d-%Y %H:%M"),
         "username": username,
         "match": match,
         "prediction": prediction,
         "bold": bold,
-        "approved": False,
-        "actual": None,
+        "approval_status": "pending",
+        "result_status": "pending",
         "score": 0
     }
 
     try:
-        df = pd.read_csv(CSV_FILE)
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    except FileNotFoundError:
-        df = pd.DataFrame([new_row])
+        df = pd.read_csv(PRED_FILE)
+    except:
+        df = pd.DataFrame(columns=new_row.keys())
 
-    df.to_csv(CSV_FILE, index=False)
+    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+
+    df.to_csv(PRED_FILE, index=False)
+
     st.success("Prediction submitted!")
