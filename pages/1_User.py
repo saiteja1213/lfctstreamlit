@@ -1,56 +1,24 @@
 import streamlit as st
-import pandas as pd
-import os
 from datetime import datetime
-
-PRED_FILE = "predictions.csv"
-MATCH_FILE = "matches.csv"
+from gsheets import append_row
 
 st.title("Submit Prediction")
 
-# ensure predictions file exists
-if not os.path.exists(PRED_FILE):
-    df = pd.DataFrame(columns=[
-        "timestamp","username","match","prediction",
-        "bold","approval_status","result_status","score"
-    ])
-    df.to_csv(PRED_FILE,index=False)
-
-matches = pd.read_csv(MATCH_FILE)
-
-today = datetime.now().strftime("%m-%d-%Y")
-
-today_matches = matches[matches["match_date"] == today]
-
-if today_matches.empty:
-    st.warning("No matches today")
-    st.stop()
-
-match = st.selectbox("Select Match", today_matches["match_name"])
-
-username = st.text_input("Your Name")
-
+username = st.text_input("Name")
+match = st.text_input("Match")
 prediction = st.text_input("Prediction")
+bold = st.checkbox("Bold Prediction")
 
-bold = st.checkbox("Bold Prediction (2 points)")
-
-if st.button("Submit Prediction"):
-
-    new_row = {
-        "timestamp": datetime.now().strftime("%m-%d-%Y %H:%M"),
-        "username": username,
-        "match": match,
-        "prediction": prediction,
-        "bold": bold,
-        "approval_status": "pending",
-        "result_status": "pending",
-        "score": 0
-    }
-
-    df = pd.read_csv(PRED_FILE)
-
-    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-
-    df.to_csv(PRED_FILE, index=False)
-
-    st.success("Prediction submitted!")
+if st.button("Submit"):
+    row = [
+        datetime.now().strftime("%Y-%m-%d %H:%M"),
+        username,
+        match,
+        prediction,
+        bold,
+        "pending",   # approval_status
+        "pending",   # result_status
+        0            # score
+    ]
+    append_row(row)
+    st.success("Prediction saved!")
