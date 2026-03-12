@@ -9,6 +9,6 @@ df = pd.read_csv(PRED_FILE)
 
 leaderboard = df.groupby("username")["score"].sum().reset_index()
 
-leaderboard = leaderboard.sort_values("score", ascending=False)
+leaderboard = leaderboard.sort_values(by="score", ascending=False)
 
 st.dataframe(leaderboard, use_container_width=True)
