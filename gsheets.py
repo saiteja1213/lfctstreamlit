@@ -6,7 +6,7 @@ import streamlit as st
 
 SHEET_NAME = "LFxCT Scoreboard"
 
-# Read JSON from Streamlit secrets
+# Load secret
 service_account_info = json.loads(st.secrets["GOOGLESHEETAPI"])
 
 SCOPES = [
@@ -15,7 +15,6 @@ SCOPES = [
 ]
 
 creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
-
 client = gspread.authorize(creds)
 
 def get_sheet():
