@@ -1,29 +1,32 @@
 import streamlit as st
 import pandas as pd
+import os
 
-MANAGER_PASSWORD = "admin"
+PRED_FILE = "predictions.csv"
+PASSWORD = "ipladmin"
 
-def check_password():
-    if "manager_auth" not in st.session_state:
-        st.session_state.manager_auth = False
+# password protection
+if "auth" not in st.session_state:
+    st.session_state.auth = False
 
-    if not st.session_state.manager_auth:
-        password = st.text_input("Manager Password", type="password")
+if not st.session_state.auth:
 
-        if st.button("Login"):
-            if password == MANAGER_PASSWORD:
-                st.session_state.manager_auth = True
-                st.rerun()
-            else:
-                st.error("Wrong password")
+    pw = st.text_input("Manager Password", type="password")
 
-        st.stop()
+    if st.button("Login"):
 
-check_password()
+        if pw == PASSWORD:
+            st.session_state.auth = True
+            st.rerun()
+
+        else:
+            st.error("Wrong password")
+
+    st.stop()
 
 st.title("Manager Approval")
 
-df = pd.read_csv("predictions.csv")
+df = pd.read_csv(PRED_FILE)
 
 pending = df[df["approval_status"] == "pending"].copy()
 
@@ -40,14 +43,9 @@ edited = st.data_editor(
         "approve": st.column_config.CheckboxColumn("Approve")
     },
     disabled=[
-        "timestamp",
-        "username",
-        "match",
-        "prediction",
-        "bold",
-        "approval_status",
-        "result_status",
-        "score"
+        "timestamp","username","match",
+        "prediction","bold",
+        "approval_status","result_status","score"
     ]
 )
 
@@ -56,9 +54,10 @@ if st.button("Approve Selected"):
     selected = edited[edited["approve"] == True]
 
     for idx in selected.index:
-        df.loc[idx, "approval_status"] = "approved"
+        df.loc[idx,"approval_status"] = "approved"
 
-    df.to_csv("predictions.csv", index=False)
+    df.to_csv(PRED_FILE,index=False)
 
     st.success("Predictions Approved")
+
     st.rerun()
