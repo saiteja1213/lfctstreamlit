@@ -3,6 +3,8 @@ import pandas as pd
 from gsheets import read_data, update_cell
 
 st.title("Manager Results")
+password_input = st.text_input("Enter Manager Password", type="password")
+
 if password_input != st.secrets["MANAGER_PASSWORD"]:
     st.warning("Incorrect password! Access denied.")
     st.stop()  # Stop page if password is wrong
