@@ -2,9 +2,9 @@ import streamlit as st
 import os
 import pandas as pd
 
-st.set_page_config(page_title="Prediction League", layout="wide")
+st.set_page_config(page_title="LFxCT season2", layout="wide")
 
-st.title("🏏 IPL Prediction League")
+st.title("LFxCT Season 2🏏")
 
 PRED_FILE = "predictions.csv"
 
@@ -24,4 +24,4 @@ if not os.path.exists(PRED_FILE):
 
     df.to_csv(PRED_FILE, index=False)
 
-st.write("Use the sidebar to navigate.")
+st.write("Use the sidebar to navigate through the pages")
