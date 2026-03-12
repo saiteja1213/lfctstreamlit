@@ -1,25 +1,26 @@
 import gspread
 import pandas as pd
+import json
+import io
+import streamlit as st
 from google.oauth2.service_account import Credentials
 
 # -----------------------------
 # CONFIGURATION
 # -----------------------------
-SHEET_NAME = "LFxCT Scoreboard"  # your sheet name
-SERVICE_ACCOUNT_FILE = "lfxct-489919-b651761e0290.json"  # downloaded JSON key
+SHEET_NAME = "LFxCT Scoreboard"  # your Google Sheet name
 # -----------------------------
 
-# Set scopes
+# Read the service account JSON from Streamlit secrets
+service_account_info = json.loads(st.secrets["GOOGLESHEETAPI"])
+
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Authenticate with service account
-creds = Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE,
-    scopes=SCOPES
-)
+# Authenticate using the secret JSON
+creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 
 # Authorize client
 client = gspread.authorize(creds)
