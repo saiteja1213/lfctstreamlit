@@ -3,7 +3,10 @@ import pandas as pd
 from gsheets import read_data, update_cell, append_row
 
 st.title("Admin Panel")
-ADMIN_PASSWORD = "admin123"
+
+if password_input != st.secrets["ADMIN_PASSWORD"]:
+    st.warning("Incorrect password! Access denied.")
+    st.stop()  # Stop page if password is wrong
 
 if "admin_auth" not in st.session_state:
     st.session_state.admin_auth = False
