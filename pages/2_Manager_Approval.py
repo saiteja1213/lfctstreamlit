@@ -19,15 +19,15 @@ if not st.session_state.auth:
     st.stop()
 
 df = read_data()
-pending = df[df["approval_status"] == "pending"]
+pending = df[df["approval_status"] == "pending"].copy()
 
 if pending.empty:
     st.success("No pending approvals")
     st.stop()
 
-pending["approve"] = False
+pending.loc[:,"approve"] = False
 
-edited = st.data_editor(pending, use_container_width=True)
+edited = st.data_editor(pending, use_container_width='strech')
 
 if st.button("Approve Selected"):
     for idx, row in edited.iterrows():
