@@ -22,6 +22,13 @@ if user_df.empty:
     st.warning("No predictions found for this user.")
     st.stop()
 
+# Normalize bold column — Google Sheets returns "TRUE"/"FALSE" strings
+user_df["bold"] = user_df["bold"].apply(
+    lambda x: True if str(x).strip().upper() == "TRUE" else False
+)
+# Normalize score column to numeric
+user_df["score"] = pd.to_numeric(user_df["score"], errors="coerce").fillna(0)
+
 # ── Stats bar ────────────────────────────────────────────────────────────────
 total_preds     = len(user_df)
 completed       = user_df[user_df["result_status"] == "completed"]
