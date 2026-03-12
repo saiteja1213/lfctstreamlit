@@ -3,11 +3,29 @@ import pandas as pd
 from datetime import datetime
 
 CSV_FILE = "predictions.csv"
+MATCHES_FILE = "matches.csv"
 
 st.title("Submit Prediction")
 
+# Load matches
+try:
+    matches_df = pd.read_csv(MATCHES_FILE)
+except FileNotFoundError:
+    st.warning("No matches file found.")
+    st.stop()
+
+# Filter matches for today
+today_str = datetime.now().strftime("%m-%d-%Y")
+today_matches = matches_df[matches_df["match_date"] == today_str]
+
+if today_matches.empty:
+    st.info("No matches today.")
+    st.stop()
+
+# Dropdown for today's matches
+match = st.selectbox("Select Match", today_matches["match_name"].tolist())
+
 username = st.text_input("Your Name")
-match = st.text_input("Match (e.g., Liverpool vs Arsenal)")
 prediction = st.text_input("Prediction (Win/Lose/Draw)")
 bold = st.checkbox("Bold Prediction (double points)")
 
