@@ -12,6 +12,36 @@ if df.empty:
     st.info("No data yet. Submit your first prediction!")
     st.stop()
 
+# Normalize column names: strip whitespace, lowercase
+df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
+
+# Show actual columns in an expander for debugging
+with st.expander("🔍 Debug: Sheet columns (click to verify)"):
+    st.write(list(df.columns))
+
+# Map common variations to expected names
+COLUMN_MAP = {
+    "match": "match_name",
+    "matchname": "match_name",
+    "user": "username",
+    "user_name": "username",
+    "name": "username",
+    "predict": "prediction",
+    "predicted": "prediction",
+    "is_bold": "bold",
+    "approval": "approval_status",
+    "result": "result_status",
+    "points": "score",
+}
+df.rename(columns=COLUMN_MAP, inplace=True)
+
+# Check required columns exist
+REQUIRED = ["username", "match_name", "prediction", "bold", "approval_status", "result_status", "score"]
+missing = [c for c in REQUIRED if c not in df.columns]
+if missing:
+    st.error(f"Missing columns: {missing}  |  Actual columns: {list(df.columns)}")
+    st.stop()
+
 # Username picker
 all_users = sorted(df["username"].unique().tolist())
 selected_user = st.selectbox("Select your name", all_users)
@@ -81,7 +111,7 @@ def render_table(data):
     if data.empty:
         st.info("Nothing here yet.")
         return
-    disp = data[["timestamp", "match_name", "prediction", "bold", "approval_status", "result_status", "score"]].copy()
+    disp = data[["timestamp", "match", "prediction", "bold", "approval_status", "result_status", "score"]].copy()
     disp.columns = ["Time", "Match", "Prediction", "Bold", "Approval", "Result", "Score"]
     st.dataframe(disp, use_container_width=True, hide_index=True)
 
