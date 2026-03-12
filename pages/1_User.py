@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 from gsheets import append_row
 
-st.title("Submit Prediction")
+st.title("Submit Your Prediction")
 
 username = st.text_input("Name")
 match = st.text_input("Match")
